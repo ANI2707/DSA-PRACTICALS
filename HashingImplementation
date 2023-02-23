@@ -188,7 +188,7 @@ int main()
     int ch;
 
     cout << "Enter your choice between following : " << endl;
-    cout << "\n1.HashTable without chaining\n2.HashTable with chaning" << endl;
+    cout << "\n1.Linear Probbing\n2.Seperate Chaining" << endl;
     cin >> ch;
 
     if (ch == 1)
