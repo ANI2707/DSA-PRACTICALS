@@ -6,15 +6,18 @@ class node
         int data;
         node *left;
         node *right;
+        node(int d){
+            data=d;
+            left=NULL;
+            right=NULL;
+        }
        
 };
 class tree
 {
     public:
         node *root;
-        tree(){
-            root=NULL;
-        }
+        
         node *create()
         {
             int element;
@@ -24,10 +27,8 @@ class tree
             {
                 return NULL;
             }
-            root=new node();
-            root->data=element;
-            root->left=NULL;
-            root->right=NULL;
+            node*root=new node(element);
+            
             
             cout<<"\nEnter left element of "<<element;
             root->left=create();
@@ -37,7 +38,7 @@ class tree
         }
         void inorder(node *root)
         {
-            if(root!=NULL)
+            if(root==NULL)
             {
                 return;
             }
@@ -48,15 +49,13 @@ class tree
         }
         void preorder(node *root)
         {
-            if(root==NULL)
+           if(root==NULL)
             {
                 return;
             }
-            else{
             cout<<root->data<<endl;
             preorder(root->left);
             preorder(root->right);
-            }
         }
         void postorder(node *root)
         {
