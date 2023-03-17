@@ -1,0 +1,104 @@
+#include<iostream>
+using namespace std;
+class node
+{
+    public:
+        int data;
+        node *left;
+        node *right;
+       
+};
+class tree
+{
+    public:
+        node *root;
+        tree(){
+            root=NULL;
+        }
+        node *create()
+        {
+            int element;
+            cout<<"\nEnter data to insert(for termination enter -1) :"<<endl;
+            cin>>element;
+            if(element==-1)
+            {
+                return NULL;
+            }
+            root=new node();
+            root->data=element;
+            root->left=NULL;
+            root->right=NULL;
+            
+            cout<<"\nEnter left element of "<<element;
+            root->left=create();
+            cout<<"\nEnter right element of "<<element;
+            root->right=create();
+            return root;
+        }
+        void inorder(node *root)
+        {
+            if(root!=NULL)
+            {
+                return;
+            }
+                inorder(root->left);
+                cout<<root->data<<" ";
+                inorder(root->right); 
+            
+        }
+        void preorder(node *root)
+        {
+            if(root==NULL)
+            {
+                return;
+            }
+            else{
+            cout<<root->data<<endl;
+            preorder(root->left);
+            preorder(root->right);
+            }
+        }
+        void postorder(node *root)
+        {
+            if(root==NULL)
+            {
+                return;
+            }
+            postorder(root->left);
+            postorder(root->right);
+            cout<<root->data<<endl;
+        }
+};
+  
+int main()
+{
+    tree t;
+    int ch;
+    cout<<"****Menu*****"<<endl;
+    cout<<"\n1.Create\n2.inorder\n3.preorder\n4.postorder\n5.exit"<<endl;
+    while(true)
+    {
+        cout<<"Enter choice :";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:
+                t.root=t.create();
+                break;
+            case 2:
+                t.inorder(t.root);
+                break;
+            case 3:
+                t.preorder(t.root);
+                break;
+            case 4:
+                t.postorder(t.root);
+                break;
+            case 5:
+                cout<<"Invalid choice";
+                false;
+                break;
+                
+        }
+    }
+}
