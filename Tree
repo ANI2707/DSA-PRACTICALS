@@ -222,7 +222,7 @@ int main(){
 	tree t;
 	int ch;
 	cout<<"**********MENU**********"<<endl;
-	cout<<"\n1.Create\n2.Recursive Preorder\n2.Recursive Preorder\n3.Recursive Inorder\n4.Recursive Postorder\n5.Non-Recursive Inorder\n6.Non-Recursive Preorder\n7.Non-Recursive Postorder\n8.BFS\n9.Exit\n";
+	cout<<"\n1.Create\n2.Recursive Inorder\n2.Recursive Preorder\n3.Recursive Postorder\n4.Non-Recursive Inorder\n5.Non-Recursive Preorder\n6.Non-Recursive Postorder\n7.BFS\n8.Exit\n";
 	while(1){
 		cout<<"\nEnter a choice:";
 		cin>>ch;
