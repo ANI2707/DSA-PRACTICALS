@@ -1,5 +1,3 @@
-
-
 #include<bits/stdc++.h>
 using namespace std;
 class node{
@@ -7,6 +5,11 @@ class node{
 		string data;
 		node* left;
 		node* right;
+		node(string d){
+		    data=d;
+		    left=NULL;
+		    right=NULL;
+		}
 };
 class stack1{
     public:
@@ -108,23 +111,19 @@ class queue1{
 class tree{
 	public:
 		node* root;
-		tree(){
-			root=NULL;
-		}
 		node* create(){
 			string key;
-			cout<<"Enter the book(if not enter NULL):";
+			cout<<"Enter the book(if not enter -1):";
 			cin>>key;
-			if(key=="N"){
+			if(key=="-1"){
 			    return NULL;
 			}
-			node* temp=new node();
-			temp->data=key;
-			temp->left=NULL;
-			temp->right=NULL;
-		    cout<<"Enter the left part(if not enter NULL):"<<key<<endl;
+			
+			node* temp=new node(key);
+			
+		    cout<<"Enter the left part of :"<<key<<endl;
 			temp->left=create();
-			cout<<"Enter the right part(if not enter NULL):"<<key<<endl;
+			cout<<"Enter the right part of :"<<key<<endl;
 			temp->right=create();
 			
 			return temp;
@@ -204,12 +203,12 @@ class tree{
 		    cout<<t->data<<" ";
 		    while(q.empty()!=1){
 		        t=q.remove();
-		        if(t->left!=NULL)
+		        if(t->left)
 		        {
 		            cout<<t->left->data<<" ";
 		            q.insert(t->left);
 		        }
-		        if(t->right!=NULL)
+		        if(t->right)
 		        {
 		            cout<<t->right->data<<" ";
 		            q.insert(t->right);
@@ -222,7 +221,7 @@ int main(){
 	tree t;
 	int ch;
 	cout<<"**********MENU**********"<<endl;
-	cout<<"\n1.Create\n2.Recursive Inorder\n2.Recursive Preorder\n3.Recursive Postorder\n4.Non-Recursive Inorder\n5.Non-Recursive Preorder\n6.Non-Recursive Postorder\n7.BFS\n8.Exit\n";
+	cout<<"\n1.Create\n2.Recursive Inorder\n3.Recursive Preorder\n4.Recursive Postorder\n5.Non-Recursive Inorder\n6.Non-Recursive Preorder\n7.Non-Recursive Postorder\n8.BFS\n9.Exit\n";
 	while(1){
 		cout<<"\nEnter a choice:";
 		cin>>ch;
@@ -231,10 +230,10 @@ int main(){
 				t.root=t.create();
 				break;
 			case 2:
-				t.preorder(t.root);
+				t.inorder(t.root);
 				break;
 			case 3:
-			    t.inorder(t.root);
+			    t.preorder(t.root);	
 			    break;
 			case 4:
 			    t.postorder(t.root);
