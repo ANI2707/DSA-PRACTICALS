@@ -96,18 +96,17 @@ public:
             
             Node* p;
             string k;
-            string m;
-            string nMeaning;
-            cout<<"Enter key to update :"<<endl;
+            string newMeaning;
+            cout<<"Enter which key meaning to update :"<<endl;
             cin>>k;
             p=search(root, k);
             if (p == NULL)
                 cout << "\nElement not present in BST";
             else{
                 
-                cout<<"Enter meaning of above key : "<<endl;
-                cin>>nMeaning;
-                p->mean=nMeaning;
+                cout<<"Enter new meaning  : "<<endl;
+                cin>>newMeaning;
+                p->mean=newMeaning;
                 
             }
    }
