@@ -1,0 +1,158 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+class node{
+    public:
+    int data;
+    node* next;
+    
+    node(int d){
+        data=d;
+        next=NULL;
+    }
+};
+class graph{
+    public:
+    node* adjList[10];
+    int adj[10][10];
+    int vis[10];
+    int edges;
+    graph(){
+        for(int i=0;i<10;i++){
+            vis[i]=0;
+            adjList[i]=NULL;
+            for(int j=0;j<10;j++){
+                adj[i][j]=0;
+            }
+        }
+        
+    }
+    
+    void adjMatrix(){
+        
+        cout<<"Enter Number of edges :"<<endl;
+        cin>>edges;
+        
+        for(int i=0;i<edges;i++){
+            int u,v;
+            cout<<"Enter edge between two vertices u and v :"<<endl;
+            cin>>u>>v;
+            
+            adj[u][v]=1;
+            adj[v][u]=1;
+        }
+        for(int i=0;i<edges;i++){
+            for(int j=0;j<edges;j++){
+                cout<<adj[i][j]<<" ";
+            }cout<<endl;
+        }
+        
+    }
+    void insertList()
+    {
+        int u;
+        int v;
+        cout<<"Enter edge between two vertices u and v :"<<endl;
+            cin>>u>>v;
+        node* p=new node(v);
+        if (adjList[u] == NULL)
+        {
+            adjList[u] = p;
+        }
+        else
+        {
+            node *temp = adjList[u];
+
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            temp->next = p;
+        }
+        
+    }
+        
+    void dfs(int node){
+        cout<<node<<" ";
+        vis[node]=1;
+        
+        for(int i=0;i<edges;i++){
+            if(adj[node][i]==1 && vis[i]!=1){
+                dfs(i);
+            }
+        }
+    }
+    void dfs1(int i){
+        cout<<i<<" ";
+        vis[i]=1;
+        
+        
+        node* t= adjList[i];
+        while(t!=NULL){
+            if(vis[t->data]!=1){
+                dfs1(t->data);
+            }
+            t=t->next;
+        }
+        
+    }
+    
+    
+};
+int main() {
+    graph g;
+    int ch;
+    int v;
+    cout<<"1.DFS using matrix\n2.DFS using list\n3.Exit";
+    while(1){
+        cout<<"\nEnter a choice:";
+        cin>>ch;
+        switch(ch){
+            case 1:
+                g.adjMatrix();
+                cout<<"Enter vertex to call dfs :"<<endl;
+                cin>>v;
+                g.dfs(v);
+            break;
+            case 2:
+                cout<<"Enter number of edges :"<<endl;
+                cin>>g.edges;
+    
+                for(int i=0;i<g.edges;i++){
+                g.insertList();
+                }
+                cout<<"Enter vertex to call dfs :"<<endl;
+                cin>>v;
+    
+                g.dfs1(v);
+                for (int i = 0; i < 10; i++)
+                {
+                    node *t = g.adjList[i];
+    
+            
+        
+        
+                    while (t != NULL)
+                    {
+                        cout << t->data << " ";
+                        t = t->next;
+                    }
+                    cout << endl;
+            
+        }
+            break;
+            case 3:
+                exit(1);
+        }
+    }
+    
+   
+    
+    
+    
+    
+    
+    
+
+    return 0;
+}
