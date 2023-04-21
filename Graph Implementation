@@ -1,5 +1,6 @@
 
 #include <bits/stdc++.h>
+
 using namespace std;
 class node{
     public:
@@ -11,6 +12,55 @@ class node{
         next=NULL;
     }
 };
+class queue1{
+    public:
+    int r,f;
+    int arr[20];
+    queue1()
+    {
+        r=f=-1;
+    }
+    int empty()
+    {
+        if(r==-1 && f==-1)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+
+    }
+    void insert(int p)
+    {
+        if(empty()==1)
+        {
+            r=f=0;
+            arr[r]=p;
+        }
+        else{
+            r=r+1;
+            arr[r]=p;
+        }
+        
+    }
+    int remove()
+    {
+        int temp=arr[f];
+        if(r==f)
+        {
+            r=f=-1;
+        }
+        else{
+            f++;
+        }
+        return temp;
+    }
+    
+};
+
+
 class graph{
     public:
     node* adjList[10];
@@ -53,7 +103,7 @@ class graph{
         int u;
         int v;
         cout<<"Enter edge between two vertices u and v :"<<endl;
-            cin>>u>>v;
+        cin>>u>>v;
         node* p=new node(v);
         if (adjList[u] == NULL)
         {
@@ -77,7 +127,7 @@ class graph{
         vis[node]=1;
         
         for(int i=0;i<edges;i++){
-            if(adj[node][i]==1 && vis[i]!=1){
+            if(adj[node][i]==1 && vis[i]==0){
                 dfs(i);
             }
         }
@@ -89,13 +139,49 @@ class graph{
         
         node* t= adjList[i];
         while(t!=NULL){
-            if(vis[t->data]!=1){
+            if(vis[t->data]==0){
                 dfs1(t->data);
             }
             t=t->next;
         }
         
     }
+    void bfs(int i){
+    	queue1 q;
+    	
+    	vis[i]=1;
+    	q.insert(i);
+    	
+    	while(!q.empty()){
+    		int node=q.remove();
+			cout<<node<<" ";
+			for(int i=0;i<edges;i++){
+				if(adj[node][i]==1 && vis[i]==0){
+					vis[i]=1;
+					q.insert(i);
+				}
+			}		
+		}
+	}
+	void bfs1(int i){
+		vis[i]=1;
+		queue1 q;
+		q.insert(i);
+		cout<<i<<" ";
+		while(!q.empty()){
+			int j=q.remove();
+			node* temp=adjList[j];
+			while(temp!=NULL){
+				if(vis[temp->data]==0){
+					vis[temp->data]=1;
+						cout<<temp->data<<" ";
+					q.insert(temp->data);
+				}
+				temp=temp->next;
+			}
+			
+		}
+	}
     
     
 };
@@ -103,7 +189,7 @@ int main() {
     graph g;
     int ch;
     int v;
-    cout<<"1.DFS using matrix\n2.DFS using list\n3.Exit";
+    cout<<"1.DFS using matrix\n2.DFS using list\n3.BFS Using matrix\n4.BFS Using List\n5.Exit";
     while(1){
         cout<<"\nEnter a choice:";
         cin>>ch;
@@ -118,13 +204,14 @@ int main() {
                 cout<<"Enter number of edges :"<<endl;
                 cin>>g.edges;
     
-                for(int i=0;i<g.edges;i++){
+                for(int i=0;i< (2*g.edges);i++){
                 g.insertList();
                 }
                 cout<<"Enter vertex to call dfs :"<<endl;
                 cin>>v;
     
                 g.dfs1(v);
+                cout<<endl;
                 for (int i = 0; i < 10; i++)
                 {
                     node *t = g.adjList[i];
@@ -139,9 +226,28 @@ int main() {
                     }
                     cout << endl;
             
-        }
-            break;
+        		}
+            	break;
             case 3:
+            	g.adjMatrix();
+            	int v;
+            	cout<<"Enter vertex to perform bfs :"<<endl;
+            	cin>>v;
+            	
+            	g.bfs(v);
+            	break;
+            case 4:
+            	cout<<"Enter number of edges :"<<endl;
+                cin>>g.edges;
+    
+                for(int i=0;i< (2*g.edges);i++){
+                g.insertList();
+                }
+                cout<<"Enter vertex to call dfs :"<<endl;
+                cin>>v;
+    
+                g.bfs1(v);
+            case 5:
                 exit(1);
         }
     }
