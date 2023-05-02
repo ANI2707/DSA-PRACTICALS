@@ -1,4 +1,3 @@
-// Online C++ compiler to run C++ program online
 #include <bits/stdc++.h>
 using namespace std;
 #define MAX 100
@@ -55,23 +54,34 @@ class graph1{
        }
        vis[vertex]=1;
        dist[vertex]=0;
-       for(int i=vertex;i<edges;i++){
+       for(int i=(vertex+1);i<edges;i++){
             dist[i]=cost[vertex][i];
             from[i]=vertex;
        }
        for(int count=0;count<(edges-1);count++){
            int v=minimum(dist,vis);
            int u=from[v];
-           b[u][v]=cost[u][v];
-           b[v][u]=cost[u][v];
-           vis[v]=1;
-           for(int i=vertex;i<edges;i++){
+           if(cost[u][v]==MAX){
+                b[u][v]=0;
+                b[v][u]=0;
+                vis[v]=1;
+           }
+           else{
+               b[u][v]=cost[u][v];
+               b[v][u]=cost[u][v];
+               vis[v]=1;
+           }
+           
+           total=total+b[u][v];
+           for(int i=(vertex+1);i<edges;i++){
                if(vis[i]==0 && dist[i]>cost[v][i]){
                    from[i]=v;
                    dist[i]=cost[v][i];
                }
            }
+           
        }
+      cout<<"Total:"<<total;
        
        
        
@@ -88,19 +98,23 @@ class graph1{
         return minimum;
     }
     void printgraph(){
-        cout<<"EDGE\tWEIGHT\n";
-        for(int i=0;i<V;i++){
-            cout<<from[i]<<"-"<<i<<"\t"<<b[i][from[i]]<<"\n";
-            total=total+b[i][from[i]];
-        }
+        // cout<<"EDGE\tWEIGHT\n";
+        // for(int i=0;i<V;i++){
+        //     cout<<from[i]<<"-"<<i<<"\t"<<b[i][from[i]]<<"\n";
+        //     // total=total+b[i][from[i]];
+        // }
         
         for(int i=0;i<edges;i++){
           for(int j=0;j<edges;j++){
               cout<<b[i][j]<<" ";
+            //   if(b[i][j]!=0){
+            //       total=total+b[i][j];
+                  
+            //   }
           }
           cout<<endl;
         }
-        cout<<"Total Weight:"<<total;
+        // cout<<"Total:"<<total;
     }
 };
 int main() {
