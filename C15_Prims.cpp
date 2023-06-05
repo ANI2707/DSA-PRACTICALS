@@ -106,7 +106,7 @@ class Graph
             b[u][v]=cost[u][v];
             b[v][u]=cost[v][u];
 
-            Sum=Sum+cost[u][v];
+            // Sum=Sum+cost[u][v];
             e--;
             visited[v]=1;
 
@@ -120,7 +120,12 @@ class Graph
             }
 
         }
-        cout<<"Minimum Cost = "<<Sum<<endl;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                Sum=Sum+b[i][j];
+            }
+        }
+        cout<<"Minimum Cost = "<<Sum/2<<endl;
     }
 };
 int main()

@@ -5,7 +5,7 @@ handling techniques and compare them using number of comparisons required to fin
 set of telephone numbers.
 */
 
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 class node
@@ -14,13 +14,94 @@ public:
     long long data;
     node *next;
 };
-class hashingWithChaning
+class LinearProbing
+{
+public:
+    int hashtable[10];
+
+    LinearProbing()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            hashtable[i] = -1;
+        }
+    }
+    void insert()
+    {
+        int key;
+        cout << "Enter element to insert :" << endl;
+        cin >> key;
+        int loc = key % 10;
+        for (int i = 0; i < 10; i++)
+        {
+            if (hashtable[loc] == -1)
+            {
+                hashtable[loc] = key;
+                break;
+            }
+            else
+            {
+
+                loc = (loc + 1) % 10;
+            }
+        }
+    }
+    void display()
+    {
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (hashtable[i] == -1)
+            {
+                cout << "--" << endl;
+            }
+            else
+            {
+                cout << hashtable[i] << endl;
+            }
+        }
+    }
+    void search()
+    {
+        int key;
+        cout << "Enter element to search :" << endl;
+        cin >> key;
+        int loc = key % 10;
+        bool flag = false;
+        int count = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            if (hashtable[loc] == key)
+            {
+                count++;
+                flag = true;
+                break;
+            }
+            else
+            {
+                count++;
+                loc = (loc + 1) % 10;
+            }
+        }
+
+        if (flag)
+        {
+            cout << "element Found !" << endl;
+            cout << "No of comparisions required :" << count << endl;
+        }
+        else
+        {
+            cout << "Element not found ! " << endl;
+        }
+    }
+};
+class OpenAdd
 {
 
     node *hashtable[10];
 
 public:
-    hashingWithChaning()
+    OpenAdd()
     {
 
         for (int i = 0; i < 10; i++)
@@ -82,6 +163,7 @@ public:
         cin >> element;
 
         int loc = element % 10;
+        int count=0;
         node *temp = hashtable[loc];
         if (temp == NULL)
         {
@@ -93,6 +175,7 @@ public:
             {
                 if (temp->data == element)
                 {
+                    count++;
 
                     found = true;
                     break;
@@ -103,6 +186,7 @@ public:
             if (found)
             {
                 cout << "Element found" << endl;
+                cout << "No of comparisions required :" << count << endl;
             }
             else
             {
@@ -111,97 +195,23 @@ public:
         }
     }
 };
-class hashingWithOutChaning
-{
-public:
-    int hashtable[10];
 
-    hashingWithOutChaning()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            hashtable[i] = -1;
-        }
-    }
-    void insert()
-    {
-        int key;
-        cout << "Enter element to insert :" << endl;
-        cin >> key;
-        int loc = key % 10;
-        for (int i = 0; i < 10; i++)
-        {
-            if (hashtable[loc] == -1)
-            {
-                hashtable[loc] = key;
-                break;
-            }
-            else
-            {
-
-                loc = (loc + 1) % 10;
-            }
-        }
-    }
-    void display()
-    {
-
-        for (int i = 0; i < 10; i++)
-        {
-            if (hashtable[i] == -1)
-            {
-                cout << "--" << endl;
-            }
-            else
-            {
-                cout << hashtable[i] << endl;
-            }
-        }
-    }
-    void search()
-    {
-        int key;
-        cout << "Enter element to search :" << endl;
-        cin >> key;
-        int loc = key % 10;
-        bool flag = false;
-        for (int i = 0; i < 10; i++)
-        {
-            if (hashtable[loc] == key)
-            {
-
-                flag = true;
-            }
-            else
-            {
-                loc = (loc + 1) % 10;
-            }
-        }
-
-        if (flag)
-        {
-            cout << "element Found !" << endl;
-        }
-        else
-        {
-            cout << "Element not found ! " << endl;
-        }
-    }
-};
 int main()
 {
-    hashingWithOutChaning h1;
-    hashingWithChaning h2;
+    LinearProbing h1;
+    OpenAdd h2;
 
     int ch;
 
     cout << "Enter your choice between following : " << endl;
-    cout << "\n1.Linear Probbing\n2.Seperate Chaining" << endl;
+    cout << "\n1.Linear Probbing\n2.Quadratic Probing" << endl;
     cin >> ch;
 
-    if (ch == 1)
+    switch (ch)
     {
-        cout << "1.Insert\n2.Display\n3.search\n4.Exit";
+    case 1:
+
+        cout << "1.Insert\n2.Display\n3.search\n4.Exit\n";
         while (1)
         {
             int ch1;
@@ -227,9 +237,9 @@ int main()
                 cout << "Enter valid choice" << endl;
             }
         }
-    }
-    else
-    {
+
+    case 2:
+
         cout << "1.Insert\n2.Display\n3.search\n4.Exit";
         while (1)
         {
@@ -258,5 +268,5 @@ int main()
         }
     }
 
-    return 0;
-}
+        return 0;
+    }

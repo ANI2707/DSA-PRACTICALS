@@ -1,4 +1,7 @@
 
+//check : done
+
+
 /*
 Problem statement(Tree) :=
 A book consists of chapters, chapters consist of sections and sections consist of
@@ -6,6 +9,8 @@ subsections. Construct a tree and print the nodes. Find the time and space requi
 of your method.
 
 */
+
+
 #include<bits/stdc++.h>
 using namespace std;
 class node{

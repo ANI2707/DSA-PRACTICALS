@@ -19,10 +19,10 @@ public:
     string mean;
     Node *left;
     Node *right;
-    Node(string k,string m)
+    Node(string k, string m)
     {
-        key=k;
-        mean=m;
+        key = k;
+        mean = m;
         left = NULL;
         right = NULL;
     }
@@ -30,25 +30,25 @@ public:
 class BST
 {
 public:
-    Node *insertToBst(Node *root, string keyW,string meaning)
+    Node *insertToBst(Node *root, string keyW, string meaning)
     {
 
         if (root == NULL)
         {
-            root = new Node(keyW,meaning);
+            root = new Node(keyW, meaning);
             return root;
         }
 
         if (keyW > root->key)
         {
 
-            root->right = insertToBst(root->right, keyW , meaning);
+            root->right = insertToBst(root->right, keyW, meaning);
             return root;
         }
         else
         {
 
-            root->left = insertToBst(root->left, keyW , meaning);
+            root->left = insertToBst(root->left, keyW, meaning);
             return root;
         }
     }
@@ -57,30 +57,29 @@ public:
     {
         string keyW;
         string meaning;
-        cout << "Enter keyword to insert in BST (if not enter no) : " << endl;
+        cout << "Enter keyword to insert in BST (if not enter -1) : " << endl;
         cin >> keyW;
-        cout<<"Enter meaning of above keyword (if not enter no) :"<<endl;
-        cin>>meaning;
-        while (keyW !="no" && meaning != "no")
+        cout << "Enter meaning of above keyword (if not enter -1) :" << endl;
+        cin >> meaning;
+        while (keyW != "-1" && meaning != "-1")
         {
-            
-            root = insertToBst(root, keyW , meaning);
-            cout << "Enter keyword to insert in BST (if not enter no) : " << endl;
+
+            root = insertToBst(root, keyW, meaning);
+            cout << "Enter keyword to insert in BST (if not enter -1) : " << endl;
             cin >> keyW;
-            cout<<"Enter meaning of above keyword (if not enter no) :"<<endl;
-            cin>>meaning;
-            
+            cout << "Enter meaning of above keyword (if not enter -1) :" << endl;
+            cin >> meaning;
         }
     }
-    void inOrder(Node *root)
+    void Display(Node *root)
     {
         if (root == NULL)
         {
             return;
         }
-        inOrder(root->left);
-        cout << root->key << ":"<<root->mean<<" ";
-        inOrder(root->right);
+        Display(root->left);
+        cout << root->key << ":" << root->mean << " ";
+        Display(root->right);
     }
     Node *search(Node *root, string keyW)
     {
@@ -99,25 +98,88 @@ public:
             return search(root->left, keyW);
         }
     }
-   void update(Node* root){
-            
-            Node* p;
-            string k;
-            string newMeaning;
-            cout<<"Enter which key meaning to update :"<<endl;
-            cin>>k;
-            p=search(root, k);
-            if (p == NULL)
-                cout << "\nElement not present in BST";
-            else{
-                
-                cout<<"Enter new meaning  : "<<endl;
-                cin>>newMeaning;
-                p->mean=newMeaning;
-                
+    void update(Node *root)
+    {
+
+        Node *p;
+        string k;
+        string newMeaning;
+        cout << "Enter which key meaning to update :" << endl;
+        cin >> k;
+        p = search(root, k);
+        if (p == NULL)
+            cout << "\nElement not present in BST";
+        else
+        {
+
+            cout << "Enter new meaning  : " << endl;
+            cin >> newMeaning;
+            p->mean = newMeaning;
+        }
+    }
+    Node* minValue(Node *root)
+    {
+        Node *temp = root;
+        while (temp->left != NULL)
+        {
+            temp = temp->left;
+        }
+        return temp;
+    }
+    Node *deleteKey(Node *root,string val)
+    {
+        
+        if (root == NULL)
+        {
+            return root;
+        }
+        if (root->key == val)
+        {
+            // 0 child
+            if (root->left == NULL && root->right == NULL)
+            {
+                delete root;
+                return NULL;
             }
-   }
-    
+
+            // 1 child
+            // left Child
+            if (root->left != NULL && root->right == NULL)
+            {
+                Node *temp = root->left;
+                delete root;
+                return temp;
+            }
+            // right child
+            if (root->left == NULL && root->right != NULL)
+            {
+                Node *temp = root->right;
+                delete root;
+                return temp;
+            }
+
+            // 2 child
+            if (root->left != NULL && root->right != NULL)
+            {
+                string mini = minValue(root->right)->key;
+                root->key = mini;
+                root->right = deleteKey(root->right, mini);
+                return root;
+            }
+        }
+        else if (root->key > val)
+        {
+            // left part me jao
+            root->left = deleteKey(root->left, val);
+            return root;
+        }
+        else
+        {
+            // right part me jao
+            root->right = deleteKey(root->right, val);
+            return root;
+        }
+    }
 };
 
 int main()
@@ -126,9 +188,10 @@ int main()
     string key;
     Node *root = NULL;
     Node *p;
+    string val;
     int ch;
     cout << "**********MENU**********" << endl;
-    cout << "\n1.Create\n2.Inorder\n3.Search\n4.update\n5.exit\n";
+    cout << "\n1.Create\n2.Display\n3.Search\n4.update\n5.Delete Key\n6.exit\n";
     while (1)
     {
         cout << "\nEnter a choice:";
@@ -140,7 +203,7 @@ int main()
             b.create(root);
             break;
         case 2:
-            b.inOrder(root);
+            b.Display(root);
             break;
         case 3:
             cout << "\nEnter key to be searched : ";
@@ -151,12 +214,18 @@ int main()
             else
                 cout << "\nElement found :" << p->key;
             break;
-        
+
         case 4:
             b.update(root);
             break;
-            
         case 5:
+             
+            cout << "Enter which key  to delete :" << endl;
+            cin >> val;
+            b.deleteKey(root,val);
+            break;
+
+        case 6:
             exit(1);
         }
     }

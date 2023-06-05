@@ -1,245 +1,305 @@
-
-/* 
-Problem Statement(AVL) := A Dictionary stores keywords & its meanings. Provide facility for adding new keywords, deleting keywords, updating values of any entry. Provide facility to display whole data sorted in ascending/descending order. Also find how many maximum comparisons may require for finding any keyword. Use Height balance tree and find the complexity for finding a keyword 
-*/
 #include <iostream>
-#include <string>
+#include <queue>
+
 using namespace std;
-class node
-{
-public:
-    string k;
-    string m;
-    class node *left;
-    class node *right;
+
+struct Node {
+    string keyword;
+    string meaning;
+    Node* left;
+    Node* right;
+    int height;
 };
-class dict
-{
-public:
-    node *root;
-    void create();
-    void disp(node *);
-    void insert(node *root, node *temp);
-    int search(node *, string);
-    int update(node *, string);
-    node *del(node *, string);
-    node *min(node *);
-};
-void dict ::create()
-{
-    class node *temp;
-    int ch;
-    do
-    {
-        temp = new node;
-        cout <<"\nEnter Keyword :";
-        cin >> temp->k;
-        cout <<"\nEnter Meaning :";
-        cin >> temp->m;
-        temp->left = NULL;
-        temp->right = NULL;
-        if (root == NULL)
-        {
-            root = temp;
+
+// Function to get the height of a node
+int getHeight(Node* node) {
+    if (node == nullptr) {
+        return -1;
+    }
+    return node->height;
+}
+
+// Function to update the height of a node
+void updateHeight(Node* node) {
+    node->height = max(getHeight(node->left), getHeight(node->right)) + 1;
+}
+
+// Function to perform a right rotation
+Node* rotateRight(Node* node) {
+    Node* newRoot = node->left;
+    node->left = newRoot->right;
+    newRoot->right = node;
+    updateHeight(node);
+    updateHeight(newRoot);
+    return newRoot;
+}
+
+// Function to perform a left rotation
+Node* rotateLeft(Node* node) {
+    Node* newRoot = node->right;
+    node->right = newRoot->left;
+    newRoot->left = node;
+    updateHeight(node);
+    updateHeight(newRoot);
+    return newRoot;
+}
+
+// Function to perform a left-right rotation
+Node* rotateLeftRight(Node* node) {
+    node->left = rotateLeft(node->left);
+    return rotateRight(node);
+}
+
+// Function to perform a right-left rotation
+Node* rotateRightLeft(Node* node) {
+    node->right = rotateRight(node->right);
+    return rotateLeft(node);
+}
+
+// Function to insert a new keyword-meaning pair
+Node* insert(Node* root, const string& keyword, const string& meaning) {
+    if (root == nullptr) {
+        Node* newNode = new Node;
+        newNode->keyword = keyword;
+        newNode->meaning = meaning;
+        newNode->left = nullptr;
+        newNode->right = nullptr;
+        newNode->height = 0;
+        return newNode;
+    }
+
+    if (keyword < root->keyword) {
+        root->left = insert(root->left, keyword, meaning);
+        if (getHeight(root->left) - getHeight(root->right) == 2) {
+            if (keyword < root->left->keyword) {
+                root = rotateRight(root);
+            } else {
+                root = rotateLeftRight(root);
+            }
         }
-        else
-        {
-            insert(root, temp);
+    } else if (keyword > root->keyword) {
+        root->right = insert(root->right, keyword, meaning);
+        if (getHeight(root->right) - getHeight(root->left) == 2) {
+            if (keyword > root->right->keyword) {
+                root = rotateLeft(root);
+            } else {
+                root = rotateRightLeft(root);
+            }
         }
-        cout <<"\nDo u want to add more(y = 1 / n = 0) :";
-        cin >> ch;
-    } while (ch == 1);
-}
-void dict ::insert(node *root, node *temp)
-{
-    if (temp->k < root->k)
-    {
-        if (root->left == NULL)
-            root->left = temp;
-        else
-            insert(root->left, temp);
+    } else {
+        // Keyword already exists, update the meaning
+        root->meaning = meaning;
     }
-    else
-    {
-        if (root->right == NULL)
-            root->right = temp;
-        else
-            insert(root->right, temp);
-    }
-}
-void dict::disp(node *root)
-{
-    if (root != NULL)
-    {
-        disp(root->left);
-        cout <<"\n Key Word :"<< root->k;
-        cout <<"\t Meaning :"<< root->m;
-        disp(root->right);
-    }
-}
-int dict ::search(node *root, string k)
-{
-    int c = 0;
-    while (root != NULL)
-    {
-        c++;
-        if (k == root->k)
-        {
-            cout <<"\nNo of Comparisons :"<< c;
-            return 1;
-        }
-        if (k < root->k)
-            root = root->left;
-        if (k > root->k)
-            root = root->right;
-    }
-    return -1;
-}
-int dict ::update(node *root, string k)
-{
-    while (root != NULL)
-    {
-        if (k == root->k)
-        {
-            cout <<"\nEnter New Meaning ofKeyword" << root->k;
-            cin >> root->m;
-            return 1;
-        }
-        if (k < root->k)
-            root = root->left;
-        if (k > root->k)
-            root = root->right;
-    }
-    return -1;
-}
-node *dict ::del(node *root, string k)
-{
-    node *temp;
-    if (root == NULL)
-    {
-        cout <<"\nElement No Found";
-        return root;
-    }
-    if (k < root->k)
-    {
-        root->left = del(root->left, k);
-        return root;
-    }
-    if (k > root->k)
-    {
-        root->right = del(root->right, k);
-        return root;
-    }
-    if (root->right == NULL && root->left == NULL)
-    {
-        temp = root;
-        delete temp;
-        return NULL;
-    }
-    if (root->right == NULL)
-    {
-        temp = root;
-        root = root->left;
-        delete temp;
-        return root;
-    }
-    else if (root->left == NULL)
-    {
-        temp = root;
-        root = root->right;
-        delete temp;
-        return root;
-    }
-    temp = min(root->right);
-    root->k = temp->k;
-    root->right = del(root->right, temp->k);
+
+    updateHeight(root);
     return root;
 }
-node *dict ::min(node *q)
-{
-    while (q->left != NULL)
-    {
-        q = q->left;
-    }
-    return q;
-}
-int main()
-{
-    int ch;
-    dict d;
-    d.root = NULL;
 
-    do
-    {
-        cout <<"\nMenu\n1.Create\n2.Disp\n3.Search\n4.Update\n5.Delete\nEnter Ur CH :";
-        cin >> ch;
-        switch (ch)
-        {
-        case 1:
-            d.create();
-            break;
-        case 2:
-            if (d.root == NULL)
-            {
-                cout <<"\nNo any Keyword";
+// Function to delete a keyword
+Node* remove(Node* root, const string& keyword) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    if (keyword < root->keyword) {
+        root->left = remove(root->left, keyword);
+        if (getHeight(root->right) - getHeight(root->left) == 2) {
+            if (getHeight(root->right->left) > getHeight(root->right->right)) {
+                root = rotateRightLeft(root);
+            } else {
+                root = rotateLeft(root);
             }
-            else
-            {
-                d.disp(d.root);
+        }
+    } else if (keyword > root->keyword) {
+        root->right = remove(root->right, keyword);
+        if (getHeight(root->left) - getHeight(root->right) == 2) {
+            if (getHeight(root->left->right) > getHeight(root->left->left)) {
+                root = rotateLeftRight(root);
+            } else {
+                root = rotateRight(root);
             }
-            break;
-        case 3:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
+        }
+    } else {
+        if (root->left == nullptr && root->right == nullptr) {
+            delete root;
+            return nullptr;
+        } else if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        } else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        } else {
+            Node* successor = root->right;
+            while (successor->left != nullptr) {
+                successor = successor->left;
             }
-            else
-            {
-                cout <<"\nEnter Keyword which u want to search :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.search(d.root, k) == 1)
-                    cout <<"\nKeyword Found";
-                else
-                    cout <<"\nKeyword Not Found";
-            }
-            break;
-        case 4:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
-            }
-            else
-            {
-                cout <<"\nEnter Keyword which meaning want to update :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.update(d.root, k) == 1)
-                    cout <<"\nMeaning Updated";
-                else
-                    cout <<"\nMeaning Not Found";
-            }
-            break;
-        case 5:
-            if (d.root == NULL)
-            {
-                cout <<"\nDictionary is Empty.First add keywords then try again ";
-            }
-            else
-            {
-                cout <<"\nEnter Keyword which u want to delete :";
-                string k;
-                getline(cin >> ws, k);
-                if (d.root == NULL)
-                {
-                    cout <<"\nNo any Keyword";
-                }
-                else
-                {
-                    d.root = d.del(d.root, k);
+            root->keyword = successor->keyword;
+            root->meaning = successor->meaning;
+            root->right = remove(root->right, successor->keyword);
+            if (getHeight(root->left) - getHeight(root->right) == 2) {
+                if (getHeight(root->left->right) > getHeight(root->left->left)) {
+                    root = rotateLeftRight(root);
+                } else {
+                    root = rotateRight(root);
                 }
             }
         }
-    } while (ch <= 5);
-    return 0;
+    }
+
+    updateHeight(root);
+    return root;
+}
+
+// Function to search for a keyword
+Node* search(Node* root, const string& keyword, int& comparisons) {
+    if (root == nullptr || root->keyword == keyword) {
+        comparisons++;
+        return root;
+    }
+
+    if (keyword < root->keyword) {
+        comparisons++;
+        return search(root->left, keyword, comparisons);
+    } else {
+        comparisons++;
+        return search(root->right, keyword, comparisons);
+    }
+}
+
+// Function to traverse the tree in-order and display all keyword-meaning pairs
+void displayInOrder(Node* root) {
+    if (root == nullptr) {
+        return;
+    }
+
+    displayInOrder(root->left);
+    cout << root->keyword << ": " << root->meaning << endl;
+    displayInOrder(root->right);
+}
+
+// Function to traverse the tree in-order and display all keyword-meaning pairs in descending order
+void displayInOrderDescending(Node* root) {
+    if (root == nullptr) {
+        return;
+    }
+
+    displayInOrderDescending(root->right);
+    cout << root->keyword << ": " << root->meaning << endl;
+    displayInOrderDescending(root->left);
+}
+
+// Function to calculate the maximum number of comparisons required to find a keyword
+int calculateMaxComparisons(Node* root, const string& keyword) {
+    int comparisons = 0;
+    search(root, keyword, comparisons);
+    return comparisons;
+}
+
+int main() {
+    Node* root = nullptr;
+
+    while (true) {
+        cout << "Dictionary Menu:" << endl;
+        cout << "1. Add a new keyword" << endl;
+        cout << "2. Delete a keyword" << endl;
+        cout << "3. Update the meaning of a keyword" << endl;
+        cout << "4. Display all keyword-meaning pairs (ascending order)" << endl;
+        cout << "5. Display all keyword-meaning pairs (descending order)" << endl;
+        cout << "6. Find a keyword" << endl;
+        cout << "7. Exit" << endl;
+        cout << "Enter your choice: ";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                cout << "Enter the keyword: ";
+                string keyword;
+                cin >> keyword;
+                cout << "Enter the meaning: ";
+                string meaning;
+                cin.ignore();
+                getline(cin, meaning);
+                root = insert(root, keyword, meaning);
+                cout << "Keyword added successfully!" << endl;
+                break;
+            }
+            case 2: {
+                cout << "Enter the keyword to delete: ";
+                string keyword;
+                cin >> keyword;
+                root = remove(root, keyword);
+                cout << "Keyword deleted successfully!" << endl;
+                break;
+            }
+            case 3: {
+                cout << "Enter the keyword to update: ";
+                string keyword;
+                cin >> keyword;
+                int comparisons = 0;
+                Node* node = search(root, keyword, comparisons);
+                if (node != nullptr) {
+                    cout << "Enter the new meaning: ";
+                    string newMeaning;
+                    cin.ignore();
+                    getline(cin, newMeaning);
+                    node->meaning = newMeaning;
+                    cout << "Meaning updated successfully!" << endl;
+                } else {
+                    cout << "Keyword not found!" << endl;
+                }
+                break;
+            }
+            case 4: {
+                cout << "Keyword-meaning pairs (ascending order):" << endl;
+                displayInOrder(root);
+                break;
+            }
+            case 5: {
+                cout << "Keyword-meaning pairs (descending order):" << endl;
+                displayInOrderDescending(root);
+                break;
+            }
+            case 6: {
+                cout << "Enter the keyword to find: ";
+                string keyword;
+                cin >> keyword;
+                int comparisons = 0;
+                Node* node = search(root, keyword, comparisons);
+                if (node != nullptr) {
+                    cout << "Keyword found with meaning: " << node->meaning << endl;
+                    cout << "Number of comparisons made: " << comparisons << endl;
+                } else {
+                    cout << "Keyword not found!" << endl;
+                }
+                break;
+            }
+            case 7: {
+                cout << "Exiting..." << endl;
+                // Clean up memory (delete the tree)
+                queue<Node*> nodes;
+                nodes.push(root);
+                while (!nodes.empty()) {
+                    Node* current = nodes.front();
+                    nodes.pop();
+                    if (current != nullptr) {
+                        nodes.push(current->left);
+                        nodes.push(current->right);
+                        delete current;
+                    }
+                }
+                return 0;
+            }
+            default: {
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+            }
+        }
+
+        cout << endl;
+    }
 }
